@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <title>Classic Weather App</title>
+</head>
+<body>
+  <div class="card">
+    <div class="datetime" id="datetime"></div>
+
+    <div class="search">
+      <input type="text" placeholder="Enter City name" spellcheck="false" id="searchBox">
+      <button id="searchBtn"><img src="images/search.png" alt="Search" /></button>
+    </div>
+
+    <div class="unit-toggle">
+      <label class="switch">
+        <input type="checkbox" id="unitToggle">
+        <span class="slider round"></span>
+      </label>
+      <span class="unit-label">C / F</span>
+    </div>
+
+    <div class="error" id="error">Invalid city name</div>
+
+    <div class="weather" id="weather">
+      <img src="images/clouds.png" class="weather-icon" id="weatherIcon" alt="weather" />
+      <h1 class="temp" id="temp">22°c</h1>
+      <h2 class="city" id="city"><img src="images/location.png" class="loc-icon"> New York, US</h2>
+
+      <div class="details">
+        <div class="col">
+          <img src="images/humidity.png" alt="Humidity" />
+          <div>
+            <p class="humidity" id="humidity">50%</p>
+            <p>Humidity</p>
+          </div>
+        </div>
+        <div class="col">
+          <img src="images/wind.png" alt="Wind Speed" />
+          <div>
+            <p class="wind" id="wind">15 km/h</p>
+            <p>Wind Speed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Made with ❤️ by Krushna | Weather powered by OpenWeatherMap</p>
+  </footer>
+
+  <script>
+    const apiKey = "79cead7fd9bcc477cfce68a1506a5383";
+    const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+    const searchBox = document.getElementById("searchBox");
+    const searchBtn = document.getElementById("searchBtn");
+    const weatherIcon = document.getElementById("weatherIcon");
+    const unitToggle = document.getElementById("unitToggle");
+    let isCelsius = true;
+
+    async function checkWeather(city) {
+      const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+      if (response.status === 404) {
+        document.getElementById("error").style.display = "block";
+        document.getElementById("weather").style.display = "none";
+      } else {
+        const data = await response.json();
+        const tempC = data.main.temp;
+        const tempF = (tempC * 9 / 5) + 32;
+
+        document.getElementById("city").innerHTML = `<img src='images/location.png' class='loc-icon'> ${data.name}, ${data.sys.country}`;
+        document.getElementById("temp").innerHTML = isCelsius ? `${Math.round(tempC)}°C` : `${Math.round(tempF)}°F`;
+        document.getElementById("humidity").innerHTML = `${data.main.humidity}%`;
+        document.getElementById("wind").innerHTML = `${data.wind.speed} km/h`;
+
+        const main = data.weather[0].main;
+        switch(main) {
+          case "Clouds": weatherIcon.src = "images/clouds.png"; break;
+          case "Clear": weatherIcon.src = "images/clear.png"; break;
+          case "Rain": weatherIcon.src = "images/rain.png"; break;
+          case "Drizzle": weatherIcon.src = "images/drizzle.png"; break;
+          case "Mist": weatherIcon.src = "images/mist.png"; break;
+          default: weatherIcon.src = "images/clouds.png";
+        }
+
+        document.getElementById("weather").style.display = "block";
+        document.getElementById("error").style.display = "none";
+      }
+    }
+
+    searchBtn.addEventListener("click", () => {
+      checkWeather(searchBox.value);
+    });
+
+    unitToggle.addEventListener("change", () => {
+      isCelsius = !unitToggle.checked;
+      checkWeather(searchBox.value);
+    });
+
+    function updateTime() {
+      const now = new Date();
+      const options = { weekday: 'long', hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'long' };
+      document.getElementById("datetime").innerText = now.toLocaleDateString('en-US', options);
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    checkWeather("Pune");
+  </script>
+</body>
+</html>
