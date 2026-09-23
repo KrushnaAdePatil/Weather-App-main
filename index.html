@@ -54,9 +54,25 @@
           </div>
         </div>
       </div>
+
+      <hr class="divider">
+
+      <div class="advanced-details">
+        <div class="adv-col">
+          <p class="adv-value" id="feelsLike">23°C</p>
+          <p class="adv-label">Feels Like</p>
+        </div>
+        <div class="adv-col">
+          <p class="adv-value" id="pressure">1012 hPa</p>
+          <p class="adv-label">Pressure</p>
+        </div>
+        <div class="adv-col">
+          <p class="adv-value" id="visibility">10 km</p>
+          <p class="adv-label">Visibility</p>
+        </div>
+      </div>
     </div>
   </div>
-
   <footer>
     <p>Made with ❤️ by Krushna | Weather powered by OpenWeatherMap</p>
   </footer>
@@ -81,11 +97,16 @@
         const data = await response.json();
         const tempC = data.main.temp;
         const tempF = (tempC * 9 / 5) + 32;
+        const feelsLikeC = data.main.feels_like;
+        const feelsLikeF = (feelsLikeC * 9 / 5) + 32;
 
         document.getElementById("city").innerHTML = `<img src='images/location.png' class='loc-icon'> ${data.name}, ${data.sys.country}`;
         document.getElementById("temp").innerHTML = isCelsius ? `${Math.round(tempC)}°C` : `${Math.round(tempF)}°F`;
+        document.getElementById("feelsLike").innerHTML = isCelsius ? `${Math.round(feelsLikeC)}°C` : `${Math.round(feelsLikeF)}°F`;
         document.getElementById("humidity").innerHTML = `${data.main.humidity}%`;
         document.getElementById("wind").innerHTML = `${data.wind.speed} km/h`;
+        document.getElementById("pressure").innerHTML = `${data.main.pressure} hPa`;
+        document.getElementById("visibility").innerHTML = `${(data.visibility / 1000).toFixed(1)} km`;
 
         const main = data.weather[0].main;
         switch(main) {
