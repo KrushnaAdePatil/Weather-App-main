@@ -2,3 +2,5 @@
 
 - Added advanced weather metrics to UI
 
+- Configured glassmorphism background
+
