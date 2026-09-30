@@ -6,3 +6,5 @@
 
 - Refactored component structure
 
+- Prepared for upcoming frontend additions
+
