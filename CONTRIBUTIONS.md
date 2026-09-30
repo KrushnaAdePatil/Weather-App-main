@@ -4,3 +4,5 @@
 
 - Configured glassmorphism background
 
+- Refactored component structure
+
